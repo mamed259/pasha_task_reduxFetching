@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import { connect } from 'react-redux'
+import { fetchData } from './actions'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends Component {
+
+  componentDidMount() {
+    this.props.onFetchData()
+  }
+
+  render() {
+
+    return (
+        <div>
+          {this.props.error && <p>{this.props.error}</p>}
+
+          {this.props.data && <ul className={"fetching-list"}>
+            <li>
+              <h2>{this.props.data.title}</h2>
+              <p>{this.props.data.body}</p>
+            </li>
+          </ul>}
+        </div>
+    );
+  }
 }
 
-export default App;
+
+const mapStatetoProps = (state) => {
+  return { data: state.data, error: state.error,}
+};
+
+const mapDispatchprops = (dispatch) => {
+  return { onFetchData: () => dispatch(fetchData()) }
+};
+
+
+export default connect(mapStatetoProps, mapDispatchprops)(App);
